@@ -6,7 +6,7 @@ class ApiEndpoints {
   // ─── OpenWeatherMap Free Tier (2.5) ───────────────────────────────────────
   // Get your free key at: https://openweathermap.org/api
   // Paste it below, then add this file to .gitignore if you go public.
-  static const String apiKey = 'YOUR_API_KEY_HERE';
+  static const String apiKey = '461f04d9d3dd371598af3f098e5a1dcd';
 
   // Current weather — by city name or by lat/lon
   static const String currentWeather = '/data/2.5/weather';

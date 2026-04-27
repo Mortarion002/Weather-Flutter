@@ -1,9 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/storage/prefs_provider.dart';
 import '../../data/weather_repository.dart';
 import '../../domain/weather_entity.dart';
 
 part 'weather_provider.g.dart';
+
+const _selectedCityKey = 'selected_city';
 
 // ─── Repository provider ───────────────────────────────────────────────────
 
@@ -19,10 +22,19 @@ WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
 @Riverpod(keepAlive: true)
 class SelectedCity extends _$SelectedCity {
   @override
-  String? build() => null;
+  String? build() {
+    return ref.watch(sharedPreferencesProvider).getString(_selectedCityKey);
+  }
 
-  void select(String cityName) => state = cityName;
-  void clear() => state = null;
+  void select(String cityName) {
+    ref.read(sharedPreferencesProvider).setString(_selectedCityKey, cityName);
+    state = cityName;
+  }
+
+  void clear() {
+    ref.read(sharedPreferencesProvider).remove(_selectedCityKey);
+    state = null;
+  }
 }
 
 // ─── Current weather ───────────────────────────────────────────────────────

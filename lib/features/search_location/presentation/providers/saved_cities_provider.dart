@@ -1,9 +1,12 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
+import '../../../../core/storage/prefs_provider.dart';
 import '../../data/geocoding_model.dart';
 import '../../data/location_repository.dart';
 
 part 'saved_cities_provider.g.dart';
+
+const _savedCitiesKey = 'saved_cities';
 
 // ─── Location repository provider ─────────────────────────────────────────────
 
@@ -12,21 +15,26 @@ LocationRepository locationRepository(LocationRepositoryRef ref) {
   return LocationRepository(ref.watch(dioClientProvider));
 }
 
-// ─── Saved cities (in-memory list; persisted in Phase 5B) ────────────────────
+// ─── Saved cities (persisted via SharedPreferences) ───────────────────────────
 
 @Riverpod(keepAlive: true)
 class SavedCities extends _$SavedCities {
   @override
-  List<String> build() => [];
+  List<String> build() {
+    return ref.watch(sharedPreferencesProvider).getStringList(_savedCitiesKey) ?? [];
+  }
 
   void add(String cityName) {
-    if (!state.contains(cityName)) {
-      state = [...state, cityName];
-    }
+    if (state.contains(cityName)) return;
+    final next = [cityName, ...state];
+    ref.read(sharedPreferencesProvider).setStringList(_savedCitiesKey, next);
+    state = next;
   }
 
   void remove(String cityName) {
-    state = state.where((c) => c != cityName).toList();
+    final next = state.where((c) => c != cityName).toList();
+    ref.read(sharedPreferencesProvider).setStringList(_savedCitiesKey, next);
+    state = next;
   }
 }
 
