@@ -53,7 +53,7 @@ class TemporaTopAppBar extends StatelessWidget implements PreferredSizeWidget {
                   constraints: const BoxConstraints(),
                 ),
                 Text(
-                  'TEMPORA',
+                  'ZEPHYR',
                   style: TemporaTextStyles.appBarTitle(),
                 ),
                 IconButton(

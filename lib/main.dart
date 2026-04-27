@@ -16,7 +16,7 @@ class TemporaApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Tempora',
+      title: 'Zephyr',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
       home: const Scaffold(
