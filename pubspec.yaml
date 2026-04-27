@@ -1,0 +1,52 @@
+name: tempora
+description: "Tempora — A precision weather application."
+publish_to: 'none'
+
+version: 1.0.0+1
+
+environment:
+  sdk: ^3.11.5
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # State management
+  flutter_riverpod: ^2.6.1
+  riverpod_annotation: ^2.6.1
+
+  # Networking
+  dio: ^5.8.0+1
+
+  # Local storage
+  shared_preferences: ^2.5.3
+
+  # Location
+  geolocator: ^13.0.4
+
+  # Fonts
+  google_fonts: ^6.2.1
+
+  # Icons — Material Symbols (matches the design 1:1)
+  material_symbols_icons: ^4.2795.4
+
+  # Models
+  freezed_annotation: ^3.0.0
+  json_annotation: ^4.9.0
+
+  # Loading shimmer
+  shimmer: ^3.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+  # Code generation
+  build_runner: ^2.4.15
+  riverpod_generator: ^2.6.5
+  freezed: ^3.0.0
+  json_serializable: ^6.9.4
+
+flutter:
+  uses-material-design: true
