@@ -16,7 +16,7 @@ class SettingsScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topPad = MediaQuery.of(context).padding.top + 56 + 24;
+    final topPad = MediaQuery.of(context).padding.top + 56 + 8;
     final unit = ref.watch(temperatureUnitProvider);
     final savedCities = ref.watch(savedCitiesProvider);
     final selectedCity = ref.watch(selectedCityProvider);
@@ -35,7 +35,7 @@ class SettingsScreen extends ConsumerWidget {
           top: topPad,
           left: 20,
           right: 20,
-          bottom: 140,
+          bottom: MediaQuery.of(context).padding.bottom + 120,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,

@@ -9,6 +9,7 @@ import '../../../../core/utils/weather_icon_mapper.dart';
 import '../../../../core/storage/unit_provider.dart';
 import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/widgets/glass_card.dart';
+import '../../../../core/widgets/retry_error_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
 import '../../../../core/widgets/weather_background.dart';
 import '../../domain/weather_entity.dart';
@@ -48,7 +49,16 @@ class _CityForecast extends ConsumerWidget {
 
     return forecastAsync.when(
       loading: () => const _LoadingBody(),
-      error: (e, _) => _ErrorBody(message: e.toString()),
+      error: (e, _) {
+        final topPad = MediaQuery.of(context).padding.top + 56 + 8;
+        return Padding(
+          padding: EdgeInsets.only(top: topPad, left: 20, right: 20),
+          child: RetryErrorCard(
+            message: e.toString(),
+            onRetry: () => ref.invalidate(forecastProvider(cityName)),
+          ),
+        );
+      },
       data: (data) => _ForecastBody(hourly: data.hourly, daily: data.daily),
     );
   }
@@ -63,7 +73,7 @@ class _ForecastBody extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final topPad = MediaQuery.of(context).padding.top + 56 + 24;
+    final topPad = MediaQuery.of(context).padding.top + 56 + 8;
     final unit = ref.watch(temperatureUnitProvider);
 
     return WeatherBackground(
@@ -73,7 +83,7 @@ class _ForecastBody extends ConsumerWidget {
           top: topPad,
           left: 20,
           right: 20,
-          bottom: 140,
+          bottom: MediaQuery.of(context).padding.bottom + 120,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -257,7 +267,7 @@ class _LoadingBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final topPad = MediaQuery.of(context).padding.top + 56 + 24;
+    final topPad = MediaQuery.of(context).padding.top + 56 + 8;
 
     return Shimmer.fromColors(
       baseColor: TemporaColors.surfaceContainer,
@@ -268,7 +278,7 @@ class _LoadingBody extends StatelessWidget {
           top: topPad,
           left: 20,
           right: 20,
-          bottom: 140,
+          bottom: MediaQuery.of(context).padding.bottom + 120,
         ),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -300,52 +310,6 @@ class _ShimBox extends StatelessWidget {
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
-      ),
-    );
-  }
-}
-
-// ─── Error state ──────────────────────────────────────────────────────────────
-
-class _ErrorBody extends StatelessWidget {
-  const _ErrorBody({required this.message});
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final topPad = MediaQuery.of(context).padding.top + 56 + 24;
-
-    return Padding(
-      padding: EdgeInsets.only(top: topPad, left: 20, right: 20),
-      child: GlassCard(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Icon(
-              Symbols.warning,
-              color: TemporaColors.error,
-              size: 20,
-              weight: 200,
-            ),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    'SYSTEM EXCEPTION',
-                    style: TemporaTextStyles.dataMono(
-                      color: TemporaColors.error,
-                    ),
-                  ),
-                  const SizedBox(height: 6),
-                  Text(message, style: TemporaTextStyles.bodyMd()),
-                ],
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
