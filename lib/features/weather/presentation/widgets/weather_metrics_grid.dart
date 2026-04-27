@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
+import '../../../../core/storage/unit_provider.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../domain/weather_entity.dart';
 import '../../../../core/utils/date_formatter.dart';
 
 class WeatherMetricsGrid extends StatelessWidget {
-  const WeatherMetricsGrid({super.key, required this.weather});
+  const WeatherMetricsGrid({super.key, required this.weather, required this.unit});
 
   final WeatherEntity weather;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -17,13 +20,13 @@ class WeatherMetricsGrid extends StatelessWidget {
       children: [
         Row(
           children: [
-            Expanded(child: _HumidityCard(weather: weather)),
+            Expanded(child: _HumidityCard(weather: weather, unit: unit)),
             const SizedBox(width: 16),
             Expanded(child: _WindCard(weather: weather)),
           ],
         ),
         const SizedBox(height: 16),
-        _FeelsLikeCard(weather: weather),
+        _FeelsLikeCard(weather: weather, unit: unit),
       ],
     );
   }
@@ -32,11 +35,13 @@ class WeatherMetricsGrid extends StatelessWidget {
 // ─── Humidity ────────────────────────────────────────────────────────────────
 
 class _HumidityCard extends StatelessWidget {
-  const _HumidityCard({required this.weather});
+  const _HumidityCard({required this.weather, required this.unit});
   final WeatherEntity weather;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
+    final dewCelsius = weather.temperature - ((100 - weather.humidity) / 5);
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -61,7 +66,7 @@ class _HumidityCard extends StatelessWidget {
           ),
           const SizedBox(height: 4),
           Text(
-            'Dew ~${(weather.temperature - ((100 - weather.humidity) / 5)).toStringAsFixed(0)}°',
+            'Dew ~${TempFormatter.format(dewCelsius, unit)}',
             style: TemporaTextStyles.dataMono(),
           ),
         ],
@@ -125,8 +130,9 @@ class _WindCard extends StatelessWidget {
 // ─── Feels Like (full-width) ──────────────────────────────────────────────────
 
 class _FeelsLikeCard extends StatelessWidget {
-  const _FeelsLikeCard({required this.weather});
+  const _FeelsLikeCard({required this.weather, required this.unit});
   final WeatherEntity weather;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -168,17 +174,17 @@ class _FeelsLikeCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.end,
             children: [
               Text(
-                '${weather.feelsLike.toStringAsFixed(0)}°',
+                TempFormatter.format(weather.feelsLike, unit),
                 style: TemporaTextStyles.headingLg(),
               ),
               const Spacer(),
               Text(
-                'Lo ${weather.tempMin.toStringAsFixed(0)}°',
+                'Lo ${TempFormatter.format(weather.tempMin, unit)}',
                 style: TemporaTextStyles.dataMono(),
               ),
               const SizedBox(width: 8),
               Text(
-                'Hi ${weather.tempMax.toStringAsFixed(0)}°',
+                'Hi ${TempFormatter.format(weather.tempMax, unit)}',
                 style: TemporaTextStyles.dataMono(),
               ),
             ],

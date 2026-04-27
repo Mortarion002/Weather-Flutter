@@ -4,7 +4,9 @@ import 'package:material_symbols_icons/symbols.dart';
 import 'package:shimmer/shimmer.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/text_styles.dart';
+import '../../../../core/storage/unit_provider.dart';
 import '../../../../core/utils/date_formatter.dart';
+import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/utils/weather_icon_mapper.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
@@ -54,13 +56,14 @@ class _CityWeather extends ConsumerWidget {
 
 // ─── Data state ───────────────────────────────────────────────────────────────
 
-class _WeatherBody extends StatelessWidget {
+class _WeatherBody extends ConsumerWidget {
   const _WeatherBody({required this.weather});
   final WeatherEntity weather;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final topPad = MediaQuery.of(context).padding.top + 56 + 24;
+    final unit = ref.watch(temperatureUnitProvider);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -72,9 +75,9 @@ class _WeatherBody extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _HeroSection(weather: weather),
+          _HeroSection(weather: weather, unit: unit),
           const SizedBox(height: 32),
-          WeatherMetricsGrid(weather: weather),
+          WeatherMetricsGrid(weather: weather, unit: unit),
         ],
       ),
     );
@@ -84,8 +87,9 @@ class _WeatherBody extends StatelessWidget {
 // ─── Hero ─────────────────────────────────────────────────────────────────────
 
 class _HeroSection extends StatelessWidget {
-  const _HeroSection({required this.weather});
+  const _HeroSection({required this.weather, required this.unit});
   final WeatherEntity weather;
+  final TemperatureUnit unit;
 
   bool get _isDay {
     final now = weather.observedAt;
@@ -154,7 +158,7 @@ class _HeroSection extends StatelessWidget {
 
         // Temperature
         Text(
-          '${weather.temperature.toStringAsFixed(0)}°',
+          TempFormatter.format(weather.temperature, unit),
           style: TemporaTextStyles.dataHuge(),
         ),
         const SizedBox(height: 12),

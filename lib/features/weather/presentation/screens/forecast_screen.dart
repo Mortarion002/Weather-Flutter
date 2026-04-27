@@ -6,6 +6,8 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/utils/date_formatter.dart';
 import '../../../../core/utils/weather_icon_mapper.dart';
+import '../../../../core/storage/unit_provider.dart';
+import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
 import '../../domain/weather_entity.dart';
@@ -53,14 +55,15 @@ class _CityForecast extends ConsumerWidget {
 
 // ─── Data state ───────────────────────────────────────────────────────────────
 
-class _ForecastBody extends StatelessWidget {
+class _ForecastBody extends ConsumerWidget {
   const _ForecastBody({required this.hourly, required this.daily});
   final List<HourlyForecastEntity> hourly;
   final List<DailyForecastEntity> daily;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final topPad = MediaQuery.of(context).padding.top + 56 + 24;
+    final unit = ref.watch(temperatureUnitProvider);
 
     return SingleChildScrollView(
       physics: const BouncingScrollPhysics(),
@@ -75,11 +78,11 @@ class _ForecastBody extends StatelessWidget {
         children: [
           Text('HOURLY', style: TemporaTextStyles.labelCaps()),
           const SizedBox(height: 12),
-          _HourlySection(hourly: hourly),
+          _HourlySection(hourly: hourly, unit: unit),
           const SizedBox(height: 28),
           Text('10-DAY', style: TemporaTextStyles.labelCaps()),
           const SizedBox(height: 12),
-          _DailySection(daily: daily),
+          _DailySection(daily: daily, unit: unit),
         ],
       ),
     );
@@ -89,8 +92,9 @@ class _ForecastBody extends StatelessWidget {
 // ─── Hourly section ───────────────────────────────────────────────────────────
 
 class _HourlySection extends StatelessWidget {
-  const _HourlySection({required this.hourly});
+  const _HourlySection({required this.hourly, required this.unit});
   final List<HourlyForecastEntity> hourly;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -103,7 +107,7 @@ class _HourlySection extends StatelessWidget {
           children: [
             for (int i = 0; i < hourly.length; i++) ...[
               if (i > 0) const SizedBox(width: 4),
-              _HourlyTile(item: hourly[i]),
+              _HourlyTile(item: hourly[i], unit: unit),
             ],
           ],
         ),
@@ -113,8 +117,9 @@ class _HourlySection extends StatelessWidget {
 }
 
 class _HourlyTile extends StatelessWidget {
-  const _HourlyTile({required this.item});
+  const _HourlyTile({required this.item, required this.unit});
   final HourlyForecastEntity item;
+  final TemperatureUnit unit;
 
   bool get _isDay {
     final h = item.time.hour;
@@ -140,7 +145,7 @@ class _HourlyTile extends StatelessWidget {
           Icon(icon, size: 26, color: iconColor, weight: 200, fill: 0),
           const SizedBox(height: 10),
           Text(
-            '${item.temperature.toStringAsFixed(0)}°',
+            TempFormatter.format(item.temperature, unit),
             style: TemporaTextStyles.headingLg(),
           ),
           const SizedBox(height: 4),
@@ -157,8 +162,9 @@ class _HourlyTile extends StatelessWidget {
 // ─── Daily section ────────────────────────────────────────────────────────────
 
 class _DailySection extends StatelessWidget {
-  const _DailySection({required this.daily});
+  const _DailySection({required this.daily, required this.unit});
   final List<DailyForecastEntity> daily;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -167,7 +173,7 @@ class _DailySection extends StatelessWidget {
       child: Column(
         children: [
           for (int i = 0; i < daily.length; i++) ...[
-            _DailyTile(item: daily[i]),
+            _DailyTile(item: daily[i], unit: unit),
             if (i < daily.length - 1)
               Divider(
                 height: 1,
@@ -184,8 +190,9 @@ class _DailySection extends StatelessWidget {
 }
 
 class _DailyTile extends StatelessWidget {
-  const _DailyTile({required this.item});
+  const _DailyTile({required this.item, required this.unit});
   final DailyForecastEntity item;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
@@ -226,12 +233,12 @@ class _DailyTile extends StatelessWidget {
             ),
           ),
           Text(
-            '${item.tempHigh.toStringAsFixed(0)}°',
+            TempFormatter.format(item.tempHigh, unit),
             style: TemporaTextStyles.headingLg(),
           ),
           const SizedBox(width: 8),
           Text(
-            '${item.tempLow.toStringAsFixed(0)}°',
+            TempFormatter.format(item.tempLow, unit),
             style: TemporaTextStyles.dataMono(),
           ),
         ],
