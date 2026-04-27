@@ -11,6 +11,7 @@ import '../../../../core/widgets/top_app_bar.dart';
 import '../../domain/weather_entity.dart';
 import '../providers/weather_provider.dart';
 import '../widgets/weather_metrics_grid.dart';
+import '../../../search_location/presentation/widgets/add_city_modal.dart';
 
 class MainWeatherScreen extends ConsumerWidget {
   const MainWeatherScreen({super.key});
@@ -23,8 +24,8 @@ class MainWeatherScreen extends ConsumerWidget {
       backgroundColor: TemporaColors.black,
       extendBodyBehindAppBar: true,
       appBar: TemporaTopAppBar(
-        onSearchTap: () {}, // wired in Phase 5
-        onAddTap: () {},    // wired in Phase 5
+        onSearchTap: () => showAddCityModal(context),
+        onAddTap: () => showAddCityModal(context),
       ),
       body: city == null
           ? const _EmptyState()

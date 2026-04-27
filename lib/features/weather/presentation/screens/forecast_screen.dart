@@ -10,6 +10,7 @@ import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
 import '../../domain/weather_entity.dart';
 import '../providers/weather_provider.dart';
+import '../../../search_location/presentation/widgets/add_city_modal.dart';
 
 class ForecastScreen extends ConsumerWidget {
   const ForecastScreen({super.key});
@@ -22,8 +23,8 @@ class ForecastScreen extends ConsumerWidget {
       backgroundColor: TemporaColors.black,
       extendBodyBehindAppBar: true,
       appBar: TemporaTopAppBar(
-        onSearchTap: () {},
-        onAddTap: () {},
+        onSearchTap: () => showAddCityModal(context),
+        onAddTap: () => showAddCityModal(context),
       ),
       body: city == null
           ? const _EmptyState()
