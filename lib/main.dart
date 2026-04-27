@@ -1,13 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'core/storage/prefs_provider.dart';
 import 'core/theme/app_theme.dart';
+import 'splash_screen.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SystemChrome.setEnabledSystemUIMode(SystemUiMode.edgeToEdge);
   SystemChrome.setPreferredOrientations([DeviceOrientation.portraitUp]);
-  runApp(const ProviderScope(child: TemporaApp()));
+
+  final prefs = await SharedPreferences.getInstance();
+
+  runApp(
+    ProviderScope(
+      overrides: [
+        sharedPreferencesProvider.overrideWithValue(prefs),
+      ],
+      child: const TemporaApp(),
+    ),
+  );
 }
 
 class TemporaApp extends StatelessWidget {
@@ -19,11 +32,7 @@ class TemporaApp extends StatelessWidget {
       title: 'Zephyr',
       debugShowCheckedModeBanner: false,
       theme: AppTheme.dark,
-      home: const Scaffold(
-        body: Center(
-          child: Text('Tempora — Phase 1 scaffold'),
-        ),
-      ),
+      home: const SplashScreen(),
     );
   }
 }
