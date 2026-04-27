@@ -2,9 +2,9 @@ import 'package:flutter/material.dart';
 import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/text_styles.dart';
 
-// Full implementation in Phase 3C
-class MainWeatherScreen extends StatelessWidget {
-  const MainWeatherScreen({super.key});
+// Full implementation in Phase 4
+class ForecastScreen extends StatelessWidget {
+  const ForecastScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -12,7 +12,7 @@ class MainWeatherScreen extends StatelessWidget {
       backgroundColor: TemporaColors.black,
       body: Center(
         child: Text(
-          'Weather — coming in 3C',
+          'Forecast — coming in Phase 4',
           style: TemporaTextStyles.bodyMd(),
         ),
       ),
