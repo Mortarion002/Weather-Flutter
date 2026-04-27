@@ -1,4 +1,4 @@
-# Tempora (Zephyr)
+# Zephyr
 
 Tempora is a precision weather app built with Flutter. It delivers current weather, short-term hourly forecasts, multi-day outlooks, and location management in a focused, dark-themed mobile UI.
 
