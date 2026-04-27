@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../theme/colors.dart';
 
@@ -20,25 +19,22 @@ class GlassCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ClipRRect(
       borderRadius: borderRadius,
-      child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: blurSigma, sigmaY: blurSigma),
-        child: Container(
-          padding: padding,
-          decoration: BoxDecoration(
-            color: TemporaColors.surfaceContainer,
-            borderRadius: borderRadius,
-          ),
-          foregroundDecoration: BoxDecoration(
-            borderRadius: borderRadius,
-            gradient: LinearGradient(
-              begin: Alignment.topLeft,
-              end: Alignment.bottomRight,
-              colors: [Colors.white.withAlpha(18), Colors.transparent],
-              stops: const [0.0, 0.45],
-            ),
-          ),
-          child: child,
+      child: Container(
+        padding: padding,
+        decoration: BoxDecoration(
+          color: TemporaColors.surfaceContainer,
+          borderRadius: borderRadius,
         ),
+        foregroundDecoration: BoxDecoration(
+          borderRadius: borderRadius,
+          gradient: LinearGradient(
+            begin: Alignment.topLeft,
+            end: Alignment.bottomRight,
+            colors: [Colors.white.withAlpha(20), Colors.transparent],
+            stops: const [0.0, 0.45],
+          ),
+        ),
+        child: child,
       ),
     );
   }

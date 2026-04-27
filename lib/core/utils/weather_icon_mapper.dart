@@ -44,6 +44,8 @@ class WeatherIconMapper {
   static Color glowFor(int conditionId) {
     if (conditionId == 800 || conditionId == 801) return TemporaColors.amberGlow;
     if (conditionId >= 200 && conditionId < 600) return TemporaColors.cyanGlow;
-    return Colors.transparent;
+    if (conditionId >= 600 && conditionId < 700) return const Color(0x4DB8D4F0); // snow: ice blue
+    if (conditionId >= 700 && conditionId < 800) return const Color(0x4D8898A8); // fog/mist: grey-blue
+    return const Color(0x4D4A6A8A); // clouds: steel blue
   }
 }

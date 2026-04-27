@@ -7,7 +7,7 @@ class WeatherBackground extends StatelessWidget {
   final Widget child;
   final Color? accentColor;
 
-  static const _defaultAccent = Color(0xFF1A2C4A);
+  static const _defaultAccent = Color(0xFF4A6A8A);
 
   @override
   Widget build(BuildContext context) {
@@ -15,9 +15,10 @@ class WeatherBackground extends StatelessWidget {
     return DecoratedBox(
       decoration: BoxDecoration(
         gradient: RadialGradient(
-          center: const Alignment(0, -0.65),
-          radius: 1.4,
-          colors: [accent.withAlpha(90), TemporaColors.black],
+          center: const Alignment(0, -0.7),
+          radius: 1.2,
+          colors: [accent.withAlpha(130), TemporaColors.black],
+          stops: const [0.0, 1.0],
         ),
       ),
       child: child,
