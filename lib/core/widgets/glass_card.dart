@@ -8,14 +8,12 @@ class GlassCard extends StatelessWidget {
     required this.child,
     this.padding = const EdgeInsets.all(12),
     this.borderRadius = const BorderRadius.all(Radius.circular(12)),
-    this.opacity = 0.7,
     this.blurSigma = 20.0,
   });
 
   final Widget child;
   final EdgeInsetsGeometry padding;
   final BorderRadius borderRadius;
-  final double opacity;
   final double blurSigma;
 
   @override
@@ -27,14 +25,9 @@ class GlassCard extends StatelessWidget {
         child: Container(
           padding: padding,
           decoration: BoxDecoration(
-            color: TemporaColors.surface.withAlpha((opacity * 255).round()),
+            color: TemporaColors.surfaceContainer,
             borderRadius: borderRadius,
-            border: Border(
-              top: BorderSide(color: TemporaColors.rimLight, width: 1),
-              left: BorderSide(color: TemporaColors.rimLight, width: 1),
-              right: BorderSide(color: Colors.transparent),
-              bottom: BorderSide(color: Colors.transparent),
-            ),
+            border: Border.all(color: TemporaColors.rimLight, width: 0.5),
           ),
           child: child,
         ),
