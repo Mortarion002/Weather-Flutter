@@ -10,6 +10,7 @@ import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/utils/weather_icon_mapper.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
+import '../../../../core/widgets/weather_background.dart';
 import '../../domain/weather_entity.dart';
 import '../providers/weather_provider.dart';
 import '../widgets/weather_metrics_grid.dart';
@@ -64,21 +65,25 @@ class _WeatherBody extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final topPad = MediaQuery.of(context).padding.top + 56 + 24;
     final unit = ref.watch(temperatureUnitProvider);
+    final glowColor = WeatherIconMapper.glowFor(weather.conditionId);
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.only(
-        top: topPad,
-        left: 20,
-        right: 20,
-        bottom: 140,
-      ),
-      child: Column(
-        children: [
-          _HeroSection(weather: weather, unit: unit),
-          const SizedBox(height: 32),
-          WeatherMetricsGrid(weather: weather, unit: unit),
-        ],
+    return WeatherBackground(
+      accentColor: glowColor,
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.only(
+          top: topPad,
+          left: 20,
+          right: 20,
+          bottom: 140,
+        ),
+        child: Column(
+          children: [
+            _HeroSection(weather: weather, unit: unit),
+            const SizedBox(height: 32),
+            WeatherMetricsGrid(weather: weather, unit: unit),
+          ],
+        ),
       ),
     );
   }

@@ -6,6 +6,7 @@ import '../../../../core/theme/colors.dart';
 import '../../../../core/theme/text_styles.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
+import '../../../../core/widgets/weather_background.dart';
 import '../../../search_location/presentation/providers/saved_cities_provider.dart';
 import '../../../search_location/presentation/widgets/add_city_modal.dart';
 import '../../../weather/presentation/providers/weather_provider.dart';
@@ -27,7 +28,8 @@ class SettingsScreen extends ConsumerWidget {
         onSearchTap: () => showAddCityModal(context),
         onAddTap: () => showAddCityModal(context),
       ),
-      body: SingleChildScrollView(
+      body: WeatherBackground(
+        child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(
           top: topPad,
@@ -134,6 +136,7 @@ class SettingsScreen extends ConsumerWidget {
               ),
             ),
           ],
+        ),
         ),
       ),
     );

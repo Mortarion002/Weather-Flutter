@@ -27,7 +27,15 @@ class GlassCard extends StatelessWidget {
           decoration: BoxDecoration(
             color: TemporaColors.surfaceContainer,
             borderRadius: borderRadius,
-            border: Border.all(color: TemporaColors.rimLight, width: 0.5),
+          ),
+          foregroundDecoration: BoxDecoration(
+            borderRadius: borderRadius,
+            gradient: LinearGradient(
+              begin: Alignment.topLeft,
+              end: Alignment.bottomRight,
+              colors: [Colors.white.withAlpha(18), Colors.transparent],
+              stops: const [0.0, 0.45],
+            ),
           ),
           child: child,
         ),

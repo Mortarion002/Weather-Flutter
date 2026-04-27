@@ -10,6 +10,7 @@ import '../../../../core/storage/unit_provider.dart';
 import '../../../../core/utils/temp_formatter.dart';
 import '../../../../core/widgets/glass_card.dart';
 import '../../../../core/widgets/top_app_bar.dart';
+import '../../../../core/widgets/weather_background.dart';
 import '../../domain/weather_entity.dart';
 import '../providers/weather_provider.dart';
 import '../../../search_location/presentation/widgets/add_city_modal.dart';
@@ -65,25 +66,27 @@ class _ForecastBody extends ConsumerWidget {
     final topPad = MediaQuery.of(context).padding.top + 56 + 24;
     final unit = ref.watch(temperatureUnitProvider);
 
-    return SingleChildScrollView(
-      physics: const BouncingScrollPhysics(),
-      padding: EdgeInsets.only(
-        top: topPad,
-        left: 20,
-        right: 20,
-        bottom: 140,
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text('HOURLY', style: TemporaTextStyles.labelCaps()),
-          const SizedBox(height: 12),
-          _HourlySection(hourly: hourly, unit: unit),
-          const SizedBox(height: 28),
-          Text('10-DAY', style: TemporaTextStyles.labelCaps()),
-          const SizedBox(height: 12),
-          _DailySection(daily: daily, unit: unit),
-        ],
+    return WeatherBackground(
+      child: SingleChildScrollView(
+        physics: const BouncingScrollPhysics(),
+        padding: EdgeInsets.only(
+          top: topPad,
+          left: 20,
+          right: 20,
+          bottom: 140,
+        ),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text('HOURLY', style: TemporaTextStyles.labelCaps()),
+            const SizedBox(height: 12),
+            _HourlySection(hourly: hourly, unit: unit),
+            const SizedBox(height: 28),
+            Text('10-DAY', style: TemporaTextStyles.labelCaps()),
+            const SizedBox(height: 12),
+            _DailySection(daily: daily, unit: unit),
+          ],
+        ),
       ),
     );
   }
