@@ -22,7 +22,7 @@ class WeatherMetricsGrid extends StatelessWidget {
           children: [
             Expanded(child: _HumidityCard(weather: weather, unit: unit)),
             const SizedBox(width: 16),
-            Expanded(child: _WindCard(weather: weather)),
+            Expanded(child: _WindCard(weather: weather, unit: unit)),
           ],
         ),
         const SizedBox(height: 16),
@@ -78,12 +78,20 @@ class _HumidityCard extends StatelessWidget {
 // ─── Wind ─────────────────────────────────────────────────────────────────────
 
 class _WindCard extends StatelessWidget {
-  const _WindCard({required this.weather});
+  const _WindCard({required this.weather, required this.unit});
   final WeatherEntity weather;
+  final TemperatureUnit unit;
 
   @override
   Widget build(BuildContext context) {
     final dir = DateFormatter.windDirection(weather.windDeg);
+    // Convert wind speed to match the selected temperature unit system:
+    // Celsius → km/h, Fahrenheit → mph (1 km/h = 0.621371 mph)
+    final isMph = unit == TemperatureUnit.fahrenheit;
+    final speed = isMph
+        ? weather.windSpeedKmh * 0.621371
+        : weather.windSpeedKmh;
+    final speedUnit = isMph ? 'mph' : 'km/h';
     return GlassCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -106,11 +114,11 @@ class _WindCard extends StatelessWidget {
             text: TextSpan(
               children: [
                 TextSpan(
-                  text: weather.windSpeedKmh.toStringAsFixed(0),
+                  text: speed.toStringAsFixed(0),
                   style: TemporaTextStyles.headingLg(),
                 ),
                 TextSpan(
-                  text: ' km/h',
+                  text: ' $speedUnit',
                   style: TemporaTextStyles.dataMono(),
                 ),
               ],

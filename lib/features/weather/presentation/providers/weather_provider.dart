@@ -1,6 +1,7 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/prefs_provider.dart';
+import '../../../search_location/data/city_record.dart';
 import '../../data/weather_repository.dart';
 import '../../domain/weather_entity.dart';
 
@@ -17,18 +18,26 @@ WeatherRepository weatherRepository(WeatherRepositoryRef ref) {
 
 // ─── Selected city ─────────────────────────────────────────────────────────
 // Drives which city is currently displayed across all screens.
+// Stored as a JSON-encoded CityRecord so that lat/lon are preserved and
+// weather is always fetched for the exact city the user picked.
 // Starts as null — the main screen handles the empty state.
 
 @Riverpod(keepAlive: true)
 class SelectedCity extends _$SelectedCity {
   @override
-  String? build() {
-    return ref.watch(sharedPreferencesProvider).getString(_selectedCityKey);
+  CityRecord? build() {
+    final stored = ref.watch(sharedPreferencesProvider).getString(_selectedCityKey);
+    if (stored == null) return null;
+    try {
+      return CityRecord.fromJsonString(stored);
+    } catch (_) {
+      return null;
+    }
   }
 
-  void select(String cityName) {
-    ref.read(sharedPreferencesProvider).setString(_selectedCityKey, cityName);
-    state = cityName;
+  void select(CityRecord city) {
+    ref.read(sharedPreferencesProvider).setString(_selectedCityKey, city.toJsonString());
+    state = city;
   }
 
   void clear() {
@@ -69,4 +78,15 @@ Future<
 > forecast(ForecastRef ref, String cityName) async {
   final repo = ref.watch(weatherRepositoryProvider);
   return repo.getForecast(cityName);
+}
+
+@riverpod
+Future<
+  ({
+    List<HourlyForecastEntity> hourly,
+    List<DailyForecastEntity> daily,
+  })
+> forecastByCoords(ForecastByCoordsRef ref, double lat, double lon) async {
+  final repo = ref.watch(weatherRepositoryProvider);
+  return repo.getForecastByCoords(lat, lon);
 }

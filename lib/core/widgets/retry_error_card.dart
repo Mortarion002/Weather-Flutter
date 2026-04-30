@@ -20,12 +20,21 @@ class RetryErrorCard extends StatefulWidget {
 }
 
 class _RetryErrorCardState extends State<RetryErrorCard> {
-  int _seconds = 5;
+  static const _maxAutoRetries = 3;
+  static const _countdownSeconds = 5;
+
+  int _seconds = _countdownSeconds;
+  int _autoRetryCount = 0;
   Timer? _timer;
 
   @override
   void initState() {
     super.initState();
+    _startCountdown();
+  }
+
+  void _startCountdown() {
+    _timer?.cancel();
     _timer = Timer.periodic(const Duration(seconds: 1), _tick);
   }
 
@@ -33,7 +42,16 @@ class _RetryErrorCardState extends State<RetryErrorCard> {
     if (!mounted) return;
     if (_seconds <= 1) {
       t.cancel();
+      _autoRetryCount++;
       widget.onRetry();
+      if (_autoRetryCount < _maxAutoRetries) {
+        // Resume countdown for next auto-retry
+        setState(() => _seconds = _countdownSeconds);
+        _startCountdown();
+      } else {
+        // Max auto-retries reached — stop the countdown loop
+        setState(() => _seconds = 0);
+      }
     } else {
       setState(() => _seconds--);
     }
@@ -49,6 +67,8 @@ class _RetryErrorCardState extends State<RetryErrorCard> {
     _timer?.cancel();
     widget.onRetry();
   }
+
+  bool get _autoRetryActive => _autoRetryCount < _maxAutoRetries;
 
   @override
   Widget build(BuildContext context) {
@@ -94,7 +114,9 @@ class _RetryErrorCardState extends State<RetryErrorCard> {
           Row(
             children: [
               Text(
-                'Retrying in ${_seconds}s',
+                _autoRetryActive
+                    ? 'Retrying in ${_seconds}s (${_autoRetryCount + 1}/$_maxAutoRetries)'
+                    : 'Auto-retry stopped',
                 style: TemporaTextStyles.dataMono(),
               ),
               const Spacer(),

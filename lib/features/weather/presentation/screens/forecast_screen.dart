@@ -32,7 +32,7 @@ class ForecastScreen extends ConsumerWidget {
       ),
       body: city == null
           ? const _EmptyState()
-          : _CityForecast(cityName: city),
+          : _CityForecast(lat: city.lat, lon: city.lon),
     );
   }
 }
@@ -40,12 +40,13 @@ class ForecastScreen extends ConsumerWidget {
 // ─── City forecast — resolves async state ─────────────────────────────────────
 
 class _CityForecast extends ConsumerWidget {
-  const _CityForecast({required this.cityName});
-  final String cityName;
+  const _CityForecast({required this.lat, required this.lon});
+  final double lat;
+  final double lon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final forecastAsync = ref.watch(forecastProvider(cityName));
+    final forecastAsync = ref.watch(forecastByCoordsProvider(lat, lon));
 
     return forecastAsync.when(
       loading: () => const _LoadingBody(),
@@ -55,11 +56,17 @@ class _CityForecast extends ConsumerWidget {
           padding: EdgeInsets.only(top: topPad, left: 20, right: 20),
           child: RetryErrorCard(
             message: e.toString(),
-            onRetry: () => ref.invalidate(forecastProvider(cityName)),
+            onRetry: () => ref.invalidate(forecastByCoordsProvider(lat, lon)),
           ),
         );
       },
-      data: (data) => _ForecastBody(hourly: data.hourly, daily: data.daily),
+      data: (data) => _ForecastBody(
+        hourly: data.hourly,
+        daily: data.daily,
+        // Use the first hourly entry to drive the accent glow, matching the
+        // dynamic colour behaviour already in MainWeatherScreen.
+        accentConditionId: data.hourly.isNotEmpty ? data.hourly.first.conditionId : null,
+      ),
     );
   }
 }
@@ -67,9 +74,14 @@ class _CityForecast extends ConsumerWidget {
 // ─── Data state ───────────────────────────────────────────────────────────────
 
 class _ForecastBody extends ConsumerWidget {
-  const _ForecastBody({required this.hourly, required this.daily});
+  const _ForecastBody({
+    required this.hourly,
+    required this.daily,
+    this.accentConditionId,
+  });
   final List<HourlyForecastEntity> hourly;
   final List<DailyForecastEntity> daily;
+  final int? accentConditionId;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -77,6 +89,9 @@ class _ForecastBody extends ConsumerWidget {
     final unit = ref.watch(temperatureUnitProvider);
 
     return WeatherBackground(
+      accentColor: accentConditionId != null
+          ? WeatherIconMapper.glowFor(accentConditionId!)
+          : null,
       child: SingleChildScrollView(
         physics: const BouncingScrollPhysics(),
         padding: EdgeInsets.only(
@@ -92,7 +107,8 @@ class _ForecastBody extends ConsumerWidget {
             const SizedBox(height: 12),
             _HourlySection(hourly: hourly, unit: unit),
             const SizedBox(height: 28),
-            Text('10-DAY', style: TemporaTextStyles.labelCaps()),
+            // Fix: OWM free tier provides up to 5 days; label updated accordingly.
+            Text('5-DAY', style: TemporaTextStyles.labelCaps()),
             const SizedBox(height: 12),
             _DailySection(daily: daily, unit: unit),
           ],

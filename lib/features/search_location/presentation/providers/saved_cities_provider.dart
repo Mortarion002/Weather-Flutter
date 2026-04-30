@@ -1,8 +1,10 @@
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 import '../../../../core/network/dio_client.dart';
 import '../../../../core/storage/prefs_provider.dart';
+import '../../data/city_record.dart';
 import '../../data/geocoding_model.dart';
 import '../../data/location_repository.dart';
+import '../../../weather/presentation/providers/weather_provider.dart';
 
 part 'saved_cities_provider.g.dart';
 
@@ -16,25 +18,44 @@ LocationRepository locationRepository(LocationRepositoryRef ref) {
 }
 
 // ─── Saved cities (persisted via SharedPreferences) ───────────────────────────
+// Each city is stored as a JSON string so that its lat/lon coordinates are
+// preserved.  This ensures weather lookups always resolve to the exact city
+// the user selected from the geocoding results.
 
 @Riverpod(keepAlive: true)
 class SavedCities extends _$SavedCities {
   @override
-  List<String> build() {
-    return ref.watch(sharedPreferencesProvider).getStringList(_savedCitiesKey) ?? [];
+  List<CityRecord> build() {
+    final raw = ref.watch(sharedPreferencesProvider).getStringList(_savedCitiesKey) ?? [];
+    return raw.map(CityRecord.fromJsonString).toList();
   }
 
-  void add(String cityName) {
-    if (state.contains(cityName)) return;
-    final next = [cityName, ...state];
-    ref.read(sharedPreferencesProvider).setStringList(_savedCitiesKey, next);
+  void add(CityRecord city) {
+    if (state.any((c) => c.lat == city.lat && c.lon == city.lon)) return;
+    final next = [city, ...state];
+    ref.read(sharedPreferencesProvider).setStringList(
+          _savedCitiesKey,
+          next.map((c) => c.toJsonString()).toList(),
+        );
     state = next;
   }
 
-  void remove(String cityName) {
-    final next = state.where((c) => c != cityName).toList();
-    ref.read(sharedPreferencesProvider).setStringList(_savedCitiesKey, next);
+  // Removes the city and, if it was the active selection, clears that too.
+  void remove(CityRecord city) {
+    final next = state.where((c) => c != city).toList();
+    ref.read(sharedPreferencesProvider).setStringList(
+          _savedCitiesKey,
+          next.map((c) => c.toJsonString()).toList(),
+        );
     state = next;
+
+    // Fix: clear selectedCity when the active city is deleted so the app
+    // doesn't continue displaying weather for a city that no longer exists
+    // in the saved list.
+    final selected = ref.read(selectedCityProvider);
+    if (selected != null && selected.lat == city.lat && selected.lon == city.lon) {
+      ref.read(selectedCityProvider.notifier).clear();
+    }
   }
 }
 

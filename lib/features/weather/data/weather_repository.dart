@@ -47,7 +47,30 @@ class WeatherRepository {
       );
       final model = ForecastResponseModel.fromJson(response.data as Map<String, dynamic>);
       return (
-        hourly: _toHourlyEntities(model.list),
+        hourly: _toHourlyEntities(model.list, model.city.timezone),
+        daily: _toDailyEntities(model.list),
+      );
+    } on DioException catch (e) {
+      throw mapDioException(e);
+    }
+  }
+
+  /// Fetches the forecast by coordinates so the correct city is always used,
+  /// regardless of ambiguous city names.
+  Future<
+    ({
+      List<HourlyForecastEntity> hourly,
+      List<DailyForecastEntity> daily,
+    })
+  > getForecastByCoords(double lat, double lon) async {
+    try {
+      final response = await _dio.get(
+        ApiEndpoints.forecast,
+        queryParameters: {'lat': lat, 'lon': lon, 'cnt': 40},
+      );
+      final model = ForecastResponseModel.fromJson(response.data as Map<String, dynamic>);
+      return (
+        hourly: _toHourlyEntities(model.list, model.city.timezone),
         daily: _toDailyEntities(model.list),
       );
     } on DioException catch (e) {
@@ -58,6 +81,11 @@ class WeatherRepository {
   // ─── Mapping helpers ───────────────────────────────────────────────────────
 
   WeatherEntity _toWeatherEntity(CurrentWeatherModel m) {
+    // Guard: OWM should always return at least one weather condition, but
+    // guard against malformed responses to avoid a StateError crash.
+    if (m.weather.isEmpty) {
+      throw const UnknownException('No weather condition data in API response.');
+    }
     final cond = m.weather.first;
     return WeatherEntity(
       cityName: m.name,
@@ -83,15 +111,26 @@ class WeatherRepository {
     );
   }
 
-  // First 8 slots = 24 hours ahead in 3-hour steps
-  List<HourlyForecastEntity> _toHourlyEntities(List<ForecastItemModel> items) {
+  // First 8 slots = 24 hours ahead in 3-hour steps.
+  // The city's timezone offset (seconds east of UTC) is applied so that the
+  // stored time already represents city local time.  This makes the
+  // day/night icon calculation correct regardless of the user's device timezone.
+  List<HourlyForecastEntity> _toHourlyEntities(
+    List<ForecastItemModel> items,
+    int cityTimezoneOffsetSeconds,
+  ) {
     return items.take(8).map((item) {
-      final cond = item.weather.first;
+      // Guard: fall back to "Clear" condition if the list is unexpectedly empty.
+      final cond = item.weather.isNotEmpty ? item.weather.first : null;
+      final cityLocalTime = DateTime.fromMillisecondsSinceEpoch(
+        item.dt * 1000,
+        isUtc: true,
+      ).add(Duration(seconds: cityTimezoneOffsetSeconds));
       return HourlyForecastEntity(
-        time: DateTime.fromMillisecondsSinceEpoch(item.dt * 1000),
+        time: cityLocalTime,
         temperature: item.main.temp,
-        conditionId: cond.id,
-        condition: cond.main,
+        conditionId: cond?.id ?? 800,
+        condition: cond?.main ?? 'Clear',
         precipitationProbability: item.pop,
       );
     }).toList();
@@ -113,13 +152,16 @@ class WeatherRepository {
         (s) => s.dtTxt.contains('12:00:00'),
         orElse: () => slots.first,
       );
-      final cond = representative.weather.first;
+      // Guard: fall back gracefully if conditions are absent.
+      final cond = representative.weather.isNotEmpty
+          ? representative.weather.first
+          : null;
       return DailyForecastEntity(
         date: DateTime.parse(entry.key),
         tempHigh: temps.reduce((a, b) => a > b ? a : b),
         tempLow: temps.reduce((a, b) => a < b ? a : b),
-        conditionId: cond.id,
-        condition: cond.main,
+        conditionId: cond?.id ?? 800,
+        condition: cond?.main ?? 'Clear',
       );
     }).toList();
   }

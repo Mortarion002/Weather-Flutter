@@ -85,7 +85,7 @@ class SettingsScreen extends ConsumerWidget {
                       children: [
                         for (int i = 0; i < savedCities.length; i++) ...[
                           _CityRow(
-                            cityName: savedCities[i],
+                            cityName: savedCities[i].name,
                             isSelected: savedCities[i] == selectedCity,
                             onTap: () => ref
                                 .read(selectedCityProvider.notifier)

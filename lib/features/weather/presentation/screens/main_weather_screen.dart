@@ -32,7 +32,7 @@ class MainWeatherScreen extends ConsumerWidget {
       ),
       body: city == null
           ? const _EmptyState()
-          : _CityWeather(cityName: city),
+          : _CityWeather(lat: city.lat, lon: city.lon),
     );
   }
 }
@@ -40,12 +40,13 @@ class MainWeatherScreen extends ConsumerWidget {
 // ─── City weather — resolves async state ─────────────────────────────────────
 
 class _CityWeather extends ConsumerWidget {
-  const _CityWeather({required this.cityName});
-  final String cityName;
+  const _CityWeather({required this.lat, required this.lon});
+  final double lat;
+  final double lon;
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final weatherAsync = ref.watch(currentWeatherProvider(cityName));
+    final weatherAsync = ref.watch(currentWeatherByCoordsProvider(lat, lon));
 
     return weatherAsync.when(
       loading: () => const _LoadingBody(),
@@ -55,7 +56,7 @@ class _CityWeather extends ConsumerWidget {
           padding: EdgeInsets.only(top: topPad, left: 20, right: 20),
           child: RetryErrorCard(
             message: e.toString(),
-            onRetry: () => ref.invalidate(currentWeatherProvider(cityName)),
+            onRetry: () => ref.invalidate(currentWeatherByCoordsProvider(lat, lon)),
           ),
         );
       },

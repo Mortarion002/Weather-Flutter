@@ -49,6 +49,9 @@ NetworkException mapDioException(DioException e) {
     case DioExceptionType.connectionError:
       return const NoInternetException();
 
+    case DioExceptionType.cancel:
+      return const UnknownException('Request was cancelled.');
+
     case DioExceptionType.badResponse:
       final status = e.response?.statusCode;
       if (status == 404) return const CityNotFoundException();
