@@ -40,33 +40,29 @@ class TemporaTopAppBar extends StatelessWidget implements PreferredSizeWidget {
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                IconButton(
-                  onPressed: onSearchTap,
-                  icon: const Icon(
+                GestureDetector(
+                  onTap: onSearchTap,
+                  child: const Icon(
                     Symbols.search,
+                    size: 24,
+                    color: TemporaColors.cyan,
                     weight: 200,
                     fill: 0,
                   ),
-                  color: TemporaColors.cyan,
-                  iconSize: 24,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
                 ),
                 Text(
                   'ZEPHYR',
                   style: TemporaTextStyles.appBarTitle(),
                 ),
-                IconButton(
-                  onPressed: onAddTap,
-                  icon: const Icon(
+                GestureDetector(
+                  onTap: onAddTap,
+                  child: const Icon(
                     Symbols.add,
+                    size: 24,
+                    color: TemporaColors.cyan,
                     weight: 200,
                     fill: 0,
                   ),
-                  color: TemporaColors.cyan,
-                  iconSize: 24,
-                  padding: EdgeInsets.zero,
-                  constraints: const BoxConstraints(),
                 ),
               ],
             ),

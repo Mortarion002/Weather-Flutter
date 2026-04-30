@@ -123,10 +123,10 @@ class _AddCityModalState extends ConsumerState<AddCityModal> {
                     ),
                   ),
                 ),
-                error: (_, st) => Padding(
+                error: (e, _) => Padding(
                   padding: const EdgeInsets.symmetric(vertical: 16),
                   child: Text(
-                    'Search failed. Check your connection.',
+                    e.toString(),
                     style: TemporaTextStyles.dataMono(
                       color: TemporaColors.error,
                     ),

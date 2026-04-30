@@ -1,4 +1,3 @@
-import 'dart:ui';
 import 'package:flutter/material.dart';
 import 'package:material_symbols_icons/symbols.dart';
 import '../theme/colors.dart';
@@ -23,28 +22,24 @@ class TemporaBottomNavBar extends StatelessWidget {
         padding: EdgeInsets.only(
           bottom: MediaQuery.of(context).padding.bottom + 24,
         ),
-        child: ClipRRect(
-          borderRadius: BorderRadius.circular(999),
-          child: BackdropFilter(
-            filter: ImageFilter.blur(sigmaX: 24, sigmaY: 24),
-            child: Container(
-              padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
-              decoration: BoxDecoration(
-                color: TemporaColors.surface.withAlpha(204), // ~80%
-                borderRadius: BorderRadius.circular(999),
-                border: Border.all(
-                  color: TemporaColors.rimLight,
-                  width: 1,
-                ),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withAlpha(120),
-                    blurRadius: 32,
-                    offset: const Offset(0, 8),
-                  ),
-                ],
+        child: Container(
+          padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 14),
+          decoration: BoxDecoration(
+            color: TemporaColors.surfaceContainer,
+            borderRadius: BorderRadius.circular(999),
+            border: Border.all(
+              color: TemporaColors.rimLight,
+              width: 1,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(120),
+                blurRadius: 32,
+                offset: const Offset(0, 8),
               ),
-              child: Row(
+            ],
+          ),
+          child: Row(
                 mainAxisSize: MainAxisSize.min,
                 children: [
                   _NavItem(
@@ -71,9 +66,7 @@ class TemporaBottomNavBar extends StatelessWidget {
               ),
             ),
           ),
-        ),
-      ),
-    );
+        );
   }
 }
 
