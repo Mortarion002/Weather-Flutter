@@ -48,5 +48,18 @@ dev_dependencies:
   freezed: ^3.0.0
   json_serializable: ^6.9.4
 
+  # App icon generation
+  flutter_launcher_icons: ^0.14.3
+
 flutter:
   uses-material-design: true
+  fonts:
+    - family: MaterialSymbolsOutlined
+      fonts:
+        - asset: packages/material_symbols_icons/fonts/MaterialSymbolsOutlined.ttf
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: "assets/Zephyr.png"
+  min_sdk_android: 21
