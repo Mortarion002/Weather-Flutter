@@ -1,6 +1,6 @@
 # Zephyr
 
-Tempora is a precision weather app built with Flutter. It delivers current weather, short-term hourly forecasts, multi-day outlooks, and location management in a focused, dark-themed mobile UI.
+Tempora is a precision weather app built with Flutter. It delivers current weather, short-term hourly forecasts, multi-day outlooks, and location management in a focused, deep navy dark-themed mobile UI.
 
 The app title shown in UI is **Zephyr**.
 
@@ -34,15 +34,19 @@ The app uses Riverpod for state management, Dio for networking, and SharedPrefer
 
 - Splash experience with custom animation and transition to main shell
 - Bottom tab shell with 3 sections:
-	- Home: current weather view
-	- Forecast: hourly + 10-day style list (derived from 5-day/3h feed)
-	- Settings: units, saved cities, app info
+	- **Home**: current weather view with SVG illustration, full metrics grid, and sunrise/sunset arc
+	- **Forecast**: hourly strip + 10-day style list with tomorrow's temperature delta banner
+	- **Settings**: units, saved cities, app info
 - Add city modal with debounced search
 - Persistent city list and active city selection
-- Temperature unit toggle (Celsius/Fahrenheit)
-- Network error mapping with user-friendly retry messages
+- Temperature unit toggle (Celsius / Fahrenheit)
+- Network error mapping with user-friendly retry messages and auto-retry countdown
 - Shimmer loading states for weather and forecast screens
-- Styled weather visuals (icon mapping, accent glow, glass cards)
+- **Expanded metrics grid**: Feels Like, UV Index, Humidity, Dew Point, Wind, Visibility, Pressure
+- **Sunrise / Sunset arc card** with custom painter showing current sun position
+- **Tomorrow's Temperature banner** with directional delta computed from daily forecast
+- **SVG weather illustrations** mapped per condition (sunny, night, rain, cloudy, snow, fog)
+- Navy card surfaces with subtle borders replacing glassmorphic blur
 
 ## Tech Stack
 
@@ -51,8 +55,25 @@ The app uses Riverpod for state management, Dio for networking, and SharedPrefer
 - HTTP client: `dio`
 - Storage: `shared_preferences`
 - Location package available: `geolocator`
-- UI: `google_fonts`, `material_symbols_icons`, `shimmer`
+- UI: `google_fonts`, `material_symbols_icons`, `shimmer`, `flutter_svg`
 - Models/codegen: `freezed`, `json_serializable`, `build_runner`
+
+## Design
+
+The UI follows a deep midnight navy theme inspired by Google Weather:
+
+| Token | Color | Usage |
+| --- | --- | --- |
+| `background` | `#1A2744` | Scaffold background |
+| `surfaceContainer` | `#213560` | Card surfaces |
+| `surfaceContainerHigh` | `#273D6E` | Elevated cards |
+| `onSurface` | `#FFFFFF` | Primary text |
+| `onSurfaceVariant` | `#8AAEC4` | Secondary text |
+| `amber` | `#FFBF00` | Sun / warm accents |
+| `cyan` | `#4DD0E1` | Rain / cold accents |
+| `primaryBlue` | `#5BB5FF` | Active nav item |
+
+Weather condition codes are mapped to SVG illustrations in `lib/core/utils/weather_illustration_mapper.dart`. Assets live in `assets/illustrations/`.
 
 ## Project Structure
 
@@ -77,6 +98,7 @@ lib/
 			date_formatter.dart
 			temp_formatter.dart
 			weather_icon_mapper.dart
+			weather_illustration_mapper.dart   ← SVG asset mapper
 		widgets/
 			bottom_nav_bar.dart
 			glass_card.dart
@@ -93,6 +115,18 @@ lib/
 			presentation/
 		settings/
 			presentation/
+assets/
+	Zephyr.png
+	illustrations/              ← SVG weather illustrations
+		sunny.svg
+		night.svg
+		rain.svg
+		cloudy.svg
+		snow.svg
+		fog.svg
+		stars.svg
+		default.svg
+		forecast.svg
 test/
 	widget_test.dart
 ```
@@ -112,11 +146,11 @@ The app follows a feature-first structure with a lightweight clean separation:
 
 High-level flow:
 
-1. User selects a city in Add City modal.
+1. User selects a city in the Add City modal.
 2. City is saved in SharedPreferences and set as active.
 3. Weather providers request current weather + forecast.
 4. Repository maps API models into domain entities.
-5. UI renders hero weather, metrics, hourly strip, and daily rows.
+5. UI renders hero weather with SVG illustration, metrics grid, hourly strip, daily rows, and sunrise/sunset arc.
 
 ## Getting Started
 
@@ -124,7 +158,7 @@ High-level flow:
 
 - Flutter SDK installed and in PATH
 - A valid OpenWeatherMap API key
-- Android Studio/Xcode toolchains depending on your target platform
+- Android Studio / Xcode toolchains depending on your target platform
 
 ### Install dependencies
 
@@ -215,6 +249,8 @@ flutter build ios
 - Add repository/provider unit tests and golden/widget tests for key screens.
 - Add CI workflow for analyze + build_runner check + tests.
 - Consider offline caching strategy for latest successful weather response.
+- AQI and UV Index currently show approximated/static values — wire up OpenWeatherMap Air Pollution and UV Index endpoints for real data.
+- Moonrise/Moonset section not yet implemented — requires astronomical calculation or a separate API.
 
 ## License
 
