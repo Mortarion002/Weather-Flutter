@@ -37,6 +37,16 @@ class DateFormatter {
     return '${h - 12}PM';
   }
 
+  // "5:22 am" / "6:49 pm" — for sunrise/sunset display
+  static String timeLabel12h(DateTime dt) {
+    final h = dt.hour;
+    final m = dt.minute.toString().padLeft(2, '0');
+    if (h == 0) return '12:${m}am';
+    if (h < 12) return '$h:${m}am';
+    if (h == 12) return '12:${m}pm';
+    return '${h - 12}:${m}pm';
+  }
+
   // Wind direction label from degrees
   static String windDirection(int deg) {
     const dirs = ['N', 'NE', 'E', 'SE', 'S', 'SW', 'W', 'NW'];

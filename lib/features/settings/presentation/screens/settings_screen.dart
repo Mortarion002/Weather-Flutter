@@ -22,7 +22,7 @@ class SettingsScreen extends ConsumerWidget {
     final selectedCity = ref.watch(selectedCityProvider);
 
     return Scaffold(
-      backgroundColor: TemporaColors.black,
+      backgroundColor: TemporaColors.background,
       extendBodyBehindAppBar: true,
       appBar: TemporaTopAppBar(
         onSearchTap: () => showAddCityModal(context),

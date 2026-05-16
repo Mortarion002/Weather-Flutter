@@ -21,17 +21,16 @@ class TemporaTopAppBar extends StatelessWidget implements PreferredSizeWidget {
   Widget build(BuildContext context) {
     return ClipRect(
       child: BackdropFilter(
-        filter: ImageFilter.blur(sigmaX: 12, sigmaY: 12),
+        filter: ImageFilter.blur(sigmaX: 10, sigmaY: 10),
         child: Container(
-          height: preferredSize.height +
-              MediaQuery.of(context).padding.top,
+          height: preferredSize.height + MediaQuery.of(context).padding.top,
           padding: EdgeInsets.only(top: MediaQuery.of(context).padding.top),
           decoration: BoxDecoration(
-            color: Colors.black.withAlpha(100),
+            color: TemporaColors.black.withAlpha(160),
             border: Border(
               bottom: BorderSide(
-                color: TemporaColors.rimLight,
-                width: 1,
+                color: TemporaColors.outline,
+                width: 0.5,
               ),
             ),
           ),
@@ -45,7 +44,7 @@ class TemporaTopAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: const Icon(
                     Symbols.search,
                     size: 24,
-                    color: TemporaColors.cyan,
+                    color: TemporaColors.onSurface,
                     weight: 200,
                     fill: 0,
                   ),
@@ -59,7 +58,7 @@ class TemporaTopAppBar extends StatelessWidget implements PreferredSizeWidget {
                   child: const Icon(
                     Symbols.add,
                     size: 24,
-                    color: TemporaColors.cyan,
+                    color: TemporaColors.onSurface,
                     weight: 200,
                     fill: 0,
                   ),

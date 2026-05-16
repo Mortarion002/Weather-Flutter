@@ -28,45 +28,45 @@ class TemporaBottomNavBar extends StatelessWidget {
             color: TemporaColors.surfaceContainer,
             borderRadius: BorderRadius.circular(999),
             border: Border.all(
-              color: TemporaColors.rimLight,
-              width: 1,
+              color: TemporaColors.outline,
+              width: 0.5,
             ),
             boxShadow: [
               BoxShadow(
-                color: Colors.black.withAlpha(120),
-                blurRadius: 32,
-                offset: const Offset(0, 8),
+                color: Colors.black.withAlpha(100),
+                blurRadius: 24,
+                offset: const Offset(0, 6),
               ),
             ],
           ),
           child: Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  _NavItem(
-                    icon: Symbols.grid_view,
-                    tab: NavTab.home,
-                    current: currentTab,
-                    onTap: onTabSelected,
-                  ),
-                  const SizedBox(width: 24),
-                  _NavItem(
-                    icon: Symbols.calendar_month,
-                    tab: NavTab.forecast,
-                    current: currentTab,
-                    onTap: onTabSelected,
-                  ),
-                  const SizedBox(width: 24),
-                  _NavItem(
-                    icon: Symbols.settings,
-                    tab: NavTab.settings,
-                    current: currentTab,
-                    onTap: onTabSelected,
-                  ),
-                ],
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _NavItem(
+                icon: Symbols.grid_view,
+                tab: NavTab.home,
+                current: currentTab,
+                onTap: onTabSelected,
               ),
-            ),
+              const SizedBox(width: 28),
+              _NavItem(
+                icon: Symbols.calendar_month,
+                tab: NavTab.forecast,
+                current: currentTab,
+                onTap: onTabSelected,
+              ),
+              const SizedBox(width: 28),
+              _NavItem(
+                icon: Symbols.settings,
+                tab: NavTab.settings,
+                current: currentTab,
+                onTap: onTabSelected,
+              ),
+            ],
           ),
-        );
+        ),
+      ),
+    );
   }
 }
 
@@ -97,20 +97,20 @@ class _NavItem extends StatelessWidget {
             ? Icon(
                 icon,
                 size: 26,
-                color: TemporaColors.cyan,
+                color: TemporaColors.primaryBlue,
                 fill: 0.0,
                 weight: 300,
                 shadows: [
                   Shadow(
-                    color: TemporaColors.cyanGlow,
-                    blurRadius: 10,
+                    color: TemporaColors.primaryBlueGlow,
+                    blurRadius: 12,
                   ),
                 ],
               )
             : Icon(
                 icon,
                 size: 24,
-                color: TemporaColors.onSurface.withAlpha(100),
+                color: TemporaColors.onSurface.withAlpha(80),
                 fill: 0.0,
                 weight: 300,
               ),
