@@ -9,9 +9,9 @@ class AppTheme {
   static ThemeData get dark => ThemeData(
         brightness: Brightness.dark,
         useMaterial3: true,
-        scaffoldBackgroundColor: TemporaColors.black,
+        scaffoldBackgroundColor: TemporaColors.background,
         colorScheme: const ColorScheme.dark(
-          surface: TemporaColors.background,
+          surface: TemporaColors.surface,
           onSurface: TemporaColors.onSurface,
           surfaceContainerHighest: TemporaColors.surfaceVariant,
           primary: TemporaColors.onSurface,

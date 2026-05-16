@@ -7,18 +7,22 @@ class WeatherBackground extends StatelessWidget {
   final Widget child;
   final Color? accentColor;
 
-  static const _defaultAccent = Color(0xFF4A6A8A);
+  static const _defaultAccent = Color(0xFF213560);
 
   @override
   Widget build(BuildContext context) {
     final accent = accentColor ?? _defaultAccent;
     return DecoratedBox(
       decoration: BoxDecoration(
-        gradient: RadialGradient(
-          center: const Alignment(0, -0.7),
-          radius: 1.2,
-          colors: [accent.withAlpha(130), TemporaColors.black],
-          stops: const [0.0, 1.0],
+        gradient: LinearGradient(
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+          colors: [
+            accent.withAlpha(80),
+            TemporaColors.background,
+            TemporaColors.black,
+          ],
+          stops: const [0.0, 0.45, 1.0],
         ),
       ),
       child: child,

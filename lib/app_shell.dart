@@ -24,7 +24,7 @@ class _AppShellState extends State<AppShell> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: TemporaColors.black,
+      backgroundColor: TemporaColors.background,
       body: Stack(
         children: [
           // Screens preserved in memory — no rebuild on tab switch

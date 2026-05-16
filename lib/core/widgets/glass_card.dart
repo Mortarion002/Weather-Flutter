@@ -6,7 +6,7 @@ class GlassCard extends StatelessWidget {
     super.key,
     required this.child,
     this.padding = const EdgeInsets.all(12),
-    this.borderRadius = const BorderRadius.all(Radius.circular(12)),
+    this.borderRadius = const BorderRadius.all(Radius.circular(16)),
     this.blurSigma = 20.0,
   });
 
@@ -17,25 +17,17 @@ class GlassCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ClipRRect(
-      borderRadius: borderRadius,
-      child: Container(
-        padding: padding,
-        decoration: BoxDecoration(
-          color: TemporaColors.surfaceContainer,
-          borderRadius: borderRadius,
+    return Container(
+      padding: padding,
+      decoration: BoxDecoration(
+        color: TemporaColors.surfaceContainer,
+        borderRadius: borderRadius,
+        border: Border.all(
+          color: TemporaColors.rimLight,
+          width: 0.5,
         ),
-        foregroundDecoration: BoxDecoration(
-          borderRadius: borderRadius,
-          gradient: LinearGradient(
-            begin: Alignment.topLeft,
-            end: Alignment.bottomRight,
-            colors: [Colors.white.withAlpha(20), Colors.transparent],
-            stops: const [0.0, 0.45],
-          ),
-        ),
-        child: child,
       ),
+      child: child,
     );
   }
 }
